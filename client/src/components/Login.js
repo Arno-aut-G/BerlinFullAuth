@@ -1,79 +1,83 @@
-import React, { Component } from 'react'
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { login } from './UserFunctions'
+import queryString from 'query-string'
 
-class Login extends Component {
-  constructor() {
-    super()
-    this.state = {
-      email: '',
-      password: '',
-      errors: {}
-    }
 
-    this.onChange = this.onChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+const Login = () => {
+  const [userState, setUserState] = useState({
+    email: '',
+    password: '',
+    errors: {}
+  })
+  let history = useHistory()
+
+
+
+
+  const onChange = (e) => {
+    const { name, value } = e.target
+    setUserState(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
   }
 
-  onChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
-  }
-  
-  onSubmit(e) {
+  const onSubmit = (e) => {
     e.preventDefault()
 
     const user = {
-      email: this.state.email,
-      password: this.state.password
+      email: userState.email,
+      password: userState.password
     }
 
-    login(user).then(res => {
+    login(queryString.stringify(user)).then(res => {
       if (res) {
-        this.props.history.push(`/profile`)
+        history.push(`/profile`)
       }
     })
   }
 
-  render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6 mt-5 mx-auto">
-            <form noValidate onSubmit={this.onSubmit}>
-              <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <div className="form-group">
-                <label htmlFor="email">Email address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  placeholder="Enter email"
-                  value={this.state.email}
-                  onChange={this.onChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  placeholder="Password"
-                  value={this.state.password}
-                  onChange={this.onChange}
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn btn-lg btn-primary btn-block"
-              >
-                Sign in
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-6 mt-5 mx-auto">
+          <form noValidate onSubmit={onSubmit}>
+            <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <div className="form-group">
+              <label htmlFor="email">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                placeholder="Enter email"
+                value={userState.email}
+                onChange={onChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                placeholder="Password"
+                value={userState.password}
+                onChange={onChange}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-lg btn-primary btn-block"
+            >
+              Sign in
               </button>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Login

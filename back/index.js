@@ -1,11 +1,9 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const models = require('./models')
 const loginRoute = require('./routes/loginRoute')
 const port = 3002
-
 
 app.use(cors())
 
